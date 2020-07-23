@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 
 public class DIYArrayList<T> implements List<T> {
 
+    private static final int EXTRA_CAPACITY = 5;
     private int size = 0;
     private Object[] elements;
 
@@ -16,7 +17,7 @@ public class DIYArrayList<T> implements List<T> {
 
     public <T> DIYArrayList(int initSize) {
         if (initSize < 1) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("initSize must be > 0");
         }
         elements = new Object[initSize];
         size = initSize;
@@ -191,7 +192,7 @@ public class DIYArrayList<T> implements List<T> {
 
     private void grow() {
         if (size == elements.length) {
-            elements = Arrays.copyOf(elements, elements.length + 5);
+            elements = Arrays.copyOf(elements, elements.length + EXTRA_CAPACITY);
         }
     }
 
