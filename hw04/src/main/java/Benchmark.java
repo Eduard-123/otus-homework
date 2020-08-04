@@ -17,18 +17,18 @@ public class Benchmark implements BenchmarkMBean{
     }
 
     private String getNewObjectForFill() {
-        return new String( new char[ 0 ] );
+        return new String(new char[ 0 ]);
     }
 
     void run() throws InterruptedException {
-        for ( int idx = 0; idx < loopCounter; idx++ ) {
+        for (int idx = 0; idx < loopCounter; idx++) {
             List<String> stringList = new ArrayList<>(size);
             int oldSize = size;
             //int halfOldSize = size % 2;
-            for ( int i = 0; i < size; i++ ) {
+            for (int i = 0; i < size; i++) {
                 stringList.add(getNewObjectForFill());
             }
-            Thread.sleep( 10 ); //Label_1
+            Thread.sleep(10); //Label_1
             size *= ReSizeCoefficient; // bobble
         }
     }
@@ -39,8 +39,8 @@ public class Benchmark implements BenchmarkMBean{
     }
 
     @Override
-    public void setSize( int size ) {
-        System.out.println( "new size:" + size );
+    public void setSize(int size) {
+        System.out.println("new size:" + size);
         this.size = size;
     }
 
