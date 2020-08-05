@@ -8,51 +8,59 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TestRunner {
-    private void testInit(Class<?> className, List<Method> listBefore, List<Method> listTest, List<Method> listAfter) {
-        for (Method m : className.getDeclaredMethods()) {
-            if (m.isAnnotationPresent(Before.class)) {
-                listAfter.add(m);
-            } else if (m.isAnnotationPresent(Test.class)) {
-                listTest.add(m);
-            } else if (m.isAnnotationPresent(After.class)) {
-                listBefore.add(m);
-            }
+
+    private void testInit(List<Method> listBefore, List<Method> listTest, List<Method> listAfter, Class<?> clazz) {
+
+        if (!listBefore.isEmpty() || !listTest.isEmpty() || !listAfter.isEmpty()) {
+            listBefore.clear();
+            listTest.clear();
+            listAfter.clear();
         }
+            for (Method m : clazz.getDeclaredMethods()) {
+                if (m.isAnnotationPresent(Before.class)) {
+                    listBefore.add(m);
+                } else if (m.isAnnotationPresent(Test.class)) {
+                    listTest.add(m);
+                } else if (m.isAnnotationPresent(After.class)) {
+                    listAfter.add(m);
+                }
+            }
     }
 
-    private void testRun(Class<?> className) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    public void testRun(Class<?>... classes) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         List<Method> listBefore = new ArrayList<>();
         List<Method> listTest = new ArrayList<>();
         List<Method> listAfter = new ArrayList<>();
-        int test = 0;
+
+        for (int i = 0; i < classes.length; i++) {
+            Object obj = classes[i].getConstructor().newInstance();
+            testInit(listBefore, listTest, listAfter, classes[i]);
+            invokeMethods(obj, listBefore, listTest, listAfter);
+        }
+
+    }
+
+    private void invokeMethods(Object object, List<Method> listBefore, List<Method> listTest, List<Method> listAfter) throws InvocationTargetException, IllegalAccessException {
+        int testsTotal = 0;
         int passed = 0;
 
-        testInit(className, listBefore, listTest, listAfter);
-        Object obj = className.getConstructor().newInstance();
-
-        for (int k = 0; k < listTest.size(); k++) {
-            for (int i = 0; i < listBefore.size(); i++) {
-                try {
-                    listBefore.get(i).invoke(obj);
-                } catch (IllegalAccessException | InvocationTargetException e) {
-                    e.printStackTrace();
-                }
+        try {
+            for (Method value : listBefore) {
+                value.invoke(object);
             }
-            test++;
-            try {
-                listTest.get(k).invoke(obj);
+            for (Method method : listTest) {
+                method.invoke(object);
                 passed++;
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
             }
-            for (int j = 0; j < listAfter.size(); j++) {
-                try {
-                    listAfter.get(j).invoke(obj);
-                } catch (IllegalAccessException | InvocationTargetException e) {
-                    e.printStackTrace();
-                }
+            for (Method item : listAfter) {
+                item.invoke(object);
             }
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
-        System.out.println("Test: " + test + " Passed: " + passed + " Failed: " + (test - passed));
+
+        testsTotal++;
+
+        System.out.println("Tests: " + testsTotal + " Passed: " + passed + " Failed: " + (testsTotal - passed));
     }
 }
