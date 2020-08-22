@@ -11,11 +11,10 @@ public class BeforeAndAfterSteps {
 
     @After
     public void tearDown(TestResults results) {
-
-        System.out.println(results.getTestsComplete());
-        System.out.println(results.getTestsFailed());
-        System.out.println(results.getTotalTests());
-
+        System.out.println("Tests complete: " + results.getTestsComplete());
+        System.out.println("Tests failed: " + results.getTestsFailed());
+        System.out.println("Tests total: " + results.getTotalTests());
+        System.out.println("Clearing up the environment");
     }
 
 }

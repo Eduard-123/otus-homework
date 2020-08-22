@@ -4,7 +4,7 @@ public class TestResults {
 
     private int testsFailed;
 
-    private int totalTests;
+    private long totalTests;
 
     public int getTestsComplete() {
         return testsComplete;
@@ -22,12 +22,12 @@ public class TestResults {
         this.testsFailed++;
     }
 
-    public int getTotalTests() {
+    public long getTotalTests() {
         return totalTests;
     }
 
-    public void setTotalTests(int totalTests) {
-        this.totalTests = totalTests;
+    public void setTotalTests() {
+        this.totalTests++;
     }
 
 

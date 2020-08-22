@@ -18,6 +18,6 @@ public class TestCase1 {
 
     @Test
     public void method3() {
-        System.out.println("@After-test: clearing the environment " + this.getClass().getName());
+        Assert.assertNull(null);
     }
 }

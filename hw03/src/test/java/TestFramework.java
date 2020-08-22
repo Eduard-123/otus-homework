@@ -10,8 +10,10 @@ import org.reflections.util.ConfigurationBuilder;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Stream;
 
 
 public class TestFramework {
@@ -23,11 +25,10 @@ public class TestFramework {
     }
 
     public void run() {
-        int totalClasses = 0;
         for (Class<?> clazz : getTestClasses()) {
-            totalClasses++;
             for (Method method : clazz.getDeclaredMethods()) {
                 if (method.isAnnotationPresent(Test.class)) {
+                    testResults.setTotalTests();
                     try {
                         method.invoke(clazz.getConstructor().newInstance());
                         testResults.setSuccessCount();
@@ -36,10 +37,8 @@ public class TestFramework {
                     }
                 }
             }
-            if (totalClasses == getTestClasses().size() - 1) {
-                runAfterSteps();
-            }
         }
+        runAfterSteps();
     }
 
     private Set<Class<?>> getTestClasses() {
