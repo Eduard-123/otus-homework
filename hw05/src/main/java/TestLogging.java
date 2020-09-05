@@ -1,6 +1,4 @@
-import annotations.Log;
-
-public class TestLogging implements ITestLogging {
+public class TestLogging implements Logging {
 
     @Override
     public void calculation(int param) {

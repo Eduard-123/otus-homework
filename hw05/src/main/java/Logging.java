@@ -1,6 +1,6 @@
 import annotations.Log;
 
-public interface ITestLogging {
+public interface Logging {
 
     @Log
     void calculation(int param);
