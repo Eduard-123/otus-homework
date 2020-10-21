@@ -1,0 +1,17 @@
+plugins {
+    id 'java'
+}
+
+group 'ru.otus'
+version 'unspecified'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.glassfish:javax.json'
+    implementation 'com.google.guava:guava'
+    implementation 'junit:junit:4.12'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
+}
