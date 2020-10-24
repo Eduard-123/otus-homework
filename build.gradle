@@ -25,6 +25,8 @@ allprojects {
     dependencyManagement {
         dependencies {
             dependency("com.google.guava:guava:28.2-jre")
+            dependency("org.glassfish:javax.json:1.1.4")
+            dependency("org.apache.commons:commons-lang3:3.8.1")
         }
     }
 }
