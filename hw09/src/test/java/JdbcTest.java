@@ -45,11 +45,21 @@ public class JdbcTest {
     @Test
     public void test() {
         Account account = createAccount(1L, "dbServiceUser", 10);
-        var expectedId = 1L;
-        assertThat(dbServiceAccount.saveAccount(account)).isEqualTo(expectedId);
-        assertThat(dbServiceAccount.getAccount(expectedId))
+        var expectedAccountId = 1L;
+        assertThat(dbServiceAccount.saveAccount(account)).isEqualTo(expectedAccountId);
+        assertThat(dbServiceAccount.getAccount(expectedAccountId))
                 .isPresent().get()
                 .isEqualToComparingFieldByField(account);
+
+        User newUser = createUser(1L, "dbServiceUser", 10);
+        var expectedUserId = 1L;
+        assertThat(dbServiceUser.saveUser(newUser)).isEqualTo(expectedUserId);
+        assertThat(dbServiceUser.getUser(expectedUserId))
+                .isPresent().get()
+                .hasFieldOrPropertyWithValue("name", newUser.getName())
+                .hasFieldOrPropertyWithValue("id", 1L)
+                .hasFieldOrPropertyWithValue("age", newUser.getAge());
+
     }
 
 
@@ -61,4 +71,11 @@ public class JdbcTest {
         return account;
     }
 
+    private User createUser(long id, String name, int age) {
+        User user = new User();
+        user.setId(id);
+        user.setName(name);
+        user.setAge(age);
+        return user;
+    }
 }
