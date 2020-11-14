@@ -1,10 +1,17 @@
 package jdbc;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+
 public interface DbExecutor<T> {
 
-    void create(T objectData) throws Exception;
+    long executeInsert(Connection connection, String sql, List<Object> params) throws SQLException;
 
-    void update(T objectData) throws Exception;
+    long executeUpdate(Connection connection, String sql, List<Object> params) throws SQLException;
 
-    T load(long id, Class<T> clazz) throws Exception;
+    Optional<T> executeSelect(Connection connection, String sql, long id, Function<ResultSet, T> rsHandler) throws SQLException;
 }

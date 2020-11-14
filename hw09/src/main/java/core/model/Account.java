@@ -1,4 +1,4 @@
-package jdbc.Entity;
+package core.model;
 
 import jdbc.annotations.Id;
 

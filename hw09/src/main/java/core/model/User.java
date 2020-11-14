@@ -1,4 +1,4 @@
-package jdbc.Entity;
+package core.model;
 
 import jdbc.annotations.Id;
 
@@ -53,4 +53,5 @@ public class User {
     public String toString() {
         return "User{" + "id=" + id + ", name='" + name + '\'' + ", age=" + age + '}';
     }
+
 }
