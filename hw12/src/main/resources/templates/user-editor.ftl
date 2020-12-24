@@ -25,7 +25,7 @@
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <body>
-<div class="atm.container">
+<div class="container">
     <h1 class="text-center">Добавление пользователя</h1>
     <form name="userEditor" id="userEditor" action="/user-editor" method="POST" accept-charset="ISO-8859-1">
         <div class="form-group">

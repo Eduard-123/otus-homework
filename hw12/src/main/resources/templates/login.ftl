@@ -6,7 +6,7 @@
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 </head>
 <body>
-<div class="atm.container">
+<div class="container">
     <form name="login" id="loginForm" action="/login" method="POST">
         <fieldset>
             <h1 class="text-center">Аутентификация DBWebService</h1>
