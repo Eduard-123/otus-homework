@@ -6,7 +6,7 @@
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 </head>
 <body>
-<div class="container">
+<div class="atm.container">
     <h4 class="text-danger text-center mt-4">Неверный логин или пароль!</h4>
     <a href="/login" class="btn btn-secondary text-center">Назад</a>
 </div>
