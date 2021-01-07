@@ -33,6 +33,7 @@ allprojects {
             dependency("com.h2database:h2:1.4.197")
             dependency("org.hibernate:hibernate-core:5.4.2.Final")
             dependency("ch.qos.logback:logback-classic:1.2.3")
+            dependency("org.projectlombok:lombok:1.18.6")
         }
     }
 }
