@@ -5,12 +5,11 @@
 <hibernate-configuration>
     <session-factory>
         <property name="hibernate.dialect">org.hibernate.dialect.H2Dialect</property>
-        <property name="connection.driver_class">org.h2.Driver</property>
-        <property name="hibernate.show_sql">false</property>
-        <property name="format_sql">true</property>
+        <property name="hibernate.connection.driver_class">org.h2.Driver</property>
+
+        <property name="hibernate.connection.url">jdbc:h2:mem:testDB;DB_CLOSE_DELAY=-1</property>
+        <property name="hibernate.show_sql">true</property>
         <property name="hibernate.hbm2ddl.auto">create</property>
-        <mapping class="core.model.User"/>
-        <mapping class="core.model.Address"/>
-        <mapping class="core.model.Phone"/>
+
     </session-factory>
 </hibernate-configuration>

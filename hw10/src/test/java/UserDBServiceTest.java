@@ -1,85 +1,116 @@
-import core.model.Address;
-import core.model.Phone;
-import core.model.User;
-import h2.DataSourceH2;
-import org.hibernate.SessionFactory;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import orm.DBService;
-import orm.DBServiceImpl;
-import orm.HibernateUtil;
+import ru.otus.HibernateManager;
+import ru.otus.HibernateManagerImpl;
+import ru.otus.model.AddressDataSet;
+import ru.otus.model.PhoneDataSet;
+import ru.otus.model.User;
+import ru.otus.orm.DBService;
+import ru.otus.orm.DBServiceImpl;
 
-import java.sql.SQLException;
-import java.util.List;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UserDBServiceTest {
 
-    private final String DB_CONNECTION_URL = "jdbc:h2:tcp://localhost/~/test;AUTO_SERVER=TRUE";
-    private DataSourceH2 dataBase;
-    private SessionFactory sessionFactory;
-    private DBService<User> userDBService;
+    private final HibernateManager<User> hibernateManager = new HibernateManagerImpl<>();
+    private final DBService<User> service = new DBServiceImpl<>(User.class,hibernateManager);
+    private User user;
 
     @BeforeEach
-    void setup() throws SQLException {
-        dataBase = new DataSourceH2(DB_CONNECTION_URL);
-        sessionFactory = HibernateUtil.getSessionFactory(DB_CONNECTION_URL);
-        userDBService = new DBServiceImpl<>(sessionFactory, User.class);
-    }
+    public void setUp() {
+        user = new User();
 
-    @AfterEach
-    void cleanup() throws SQLException {
-        sessionFactory.close();
-        dataBase.close();
-    }
+        AddressDataSet addressDataSet = new AddressDataSet();
+        addressDataSet.setStreet("Random street");
 
-    @Test
-    @DisplayName("Select User from Database")
-    void testUserSelection() throws SQLException {
-        Set<Phone> phones = Set.of(new Phone(1, "123456789"), new Phone(2, "987654321"));
-        dataBase.insertUser(1, "User 1", 25);
-        dataBase.insertAddress(1, "Street");
-        dataBase.insertPhone(1, "123456789", 1);
-        dataBase.insertPhone(2, "987654321", 1);
-        User user = userDBService.load(1);
-        assertEquals("User 1", user.getName());
-        assertEquals(25, user.getAge());
-        assertEquals("Street", user.getAddress().getStreet());
-        assertEquals(phones, user.getPhones());
+        PhoneDataSet phoneDataSet1 = new PhoneDataSet();
+        phoneDataSet1.setUser(user);
+        phoneDataSet1.setNumber("123456789");
+
+        PhoneDataSet phoneDataSet2 = new PhoneDataSet();
+        phoneDataSet2.setNumber("987654321");
+        phoneDataSet2.setUser(user);
+
+        user.setName("User");
+        user.setAge(50);
+        user.setAddressDataSet(addressDataSet);
+        user.setPhoneDataSets(Set.of(phoneDataSet1,phoneDataSet2));
+
     }
 
     @Test
-    @DisplayName("Insert User into Database")
-    void testUserInsertion() throws SQLException {
-        Set<Phone> phones = Set.of(new Phone("11111111111"), new Phone("22222222222"));
-        Address address = new Address("Another St");
-        User user = new User("User 2", 23, address, phones);
-        userDBService.create(user);
-        User dataInBase = dataBase.selectUserById(user.getId());
-        dataInBase.setAddress(dataBase.selectAddressById(user.getId()));
-        dataBase.selectPhoneByUserId(user.getId()).forEach(dataInBase::addPhone);
-        assertEquals(dataInBase, user);
+    public void shouldCreateAndReadCascadeUser() {
+        Long id = hibernateManager.create(user).getId();
+        User savedUser = hibernateManager.load(id, User.class);
+        assertEquals(user, savedUser);
     }
 
     @Test
-    @DisplayName("Select all Users")
-    void testSelectAllUsers() {
-        Set<Phone> firstUserPhoneNumbers = Set.of(new Phone("123456789"), new Phone("987654321"));
-        Address firstUserAddresses = new Address("Street");
-        User user1 = new User("User", 23, firstUserAddresses, firstUserPhoneNumbers);
+    public void shouldUpdateAndReadCascadeUser() {
+        User existedUser = hibernateManager.create(user);
+        AddressDataSet addressDataSet = new AddressDataSet();
+        addressDataSet.setStreet("new street");
+        existedUser.setAddressDataSet(addressDataSet);
+        Long updatedUserId = hibernateManager.update(existedUser).getId();
 
-        Set<Phone> johnsPhones = Set.of(new Phone("11111111111"), new Phone("22222222222"));
-        Address johnAddresses = new Address("Another St");
-        User user2 = new User("User 2", 23, johnAddresses, johnsPhones);
+        User updatedUser = hibernateManager.load(updatedUserId, User.class);
+        assertEquals(addressDataSet, updatedUser.getAddressDataSet());
+        assertEquals(existedUser.getId(), updatedUserId);
+    }
 
-        userDBService.create(user1);
-        userDBService.create(user2);
+    @Test
+    public void shouldCreateCascadeUserIfNotExist() {
+        user.setName("new created user");
 
-        List<User> results = userDBService.load();
-        assertEquals(2, results.size());
+        User createdUser = hibernateManager.createOrUpdate(user);
+        assertEquals(user, createdUser);
+    }
+
+    @Test
+    public void shouldUpdateCascadeUserIfExists() {
+        User existedUser = hibernateManager.create(user);
+        AddressDataSet addressDataSet = new AddressDataSet();
+        addressDataSet.setStreet("new street");
+        existedUser.setAddressDataSet(addressDataSet);
+        User updatedUser = hibernateManager.createOrUpdate(existedUser);
+        assertEquals(existedUser.getId(), updatedUser.getId());
+        assertEquals(existedUser, updatedUser);
+    }
+
+    @Test
+    public void shouldCreateCascadeUser() {
+        AddressDataSet addressDataSet = new AddressDataSet();
+        addressDataSet.setStreet("new street");
+
+        PhoneDataSet phone = new PhoneDataSet();
+        phone.setUser(user);
+
+        user.setAddressDataSet(addressDataSet);
+        user.setPhoneDataSets(new HashSet<>(Collections.singletonList(phone)));
+
+        hibernateManager.create(user);
+    }
+
+    @Test
+    public void saveCascadeUser() {
+        User savedUser = service.save(user);
+        assertEquals(user, savedUser);
+    }
+
+    @Test
+    public void updateCascadeUser() {
+        User savedUser = service.save(user);
+
+        User updatedUser = service.update(savedUser);
+        AddressDataSet addressDataSet = new AddressDataSet();
+        addressDataSet.setStreet("new street");
+        updatedUser.setAddressDataSet(addressDataSet);
+
+        assertEquals(savedUser.getId(), updatedUser.getId());
+        assertEquals(savedUser, updatedUser);
     }
 }
