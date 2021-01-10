@@ -1,12 +1,14 @@
 package ru.otus.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
 @Data
+@EqualsAndHashCode
 @Table(name = "users")
 public class User {
 

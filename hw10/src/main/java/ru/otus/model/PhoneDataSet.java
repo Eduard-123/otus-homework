@@ -1,11 +1,14 @@
 package ru.otus.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 
 @Entity
+@EqualsAndHashCode(exclude = {"user", "id"})
 @Data
+@Table(name = "phones")
 public class PhoneDataSet {
     @Id
     @GeneratedValue
