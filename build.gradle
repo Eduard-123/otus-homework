@@ -28,6 +28,12 @@ allprojects {
             dependency("org.glassfish:javax.json:1.1.4")
             dependency("org.apache.commons:commons-lang3:3.8.1")
             dependency("org.projectlombok:lombok:1.18.6")
+            dependency("com.google.code.gson:gson:2.8.5")
+            dependency("com.google.guava:guava:19.0")
+            dependency("com.h2database:h2:1.4.197")
+            dependency("org.hibernate:hibernate-core:5.4.2.Final")
+            dependency("ch.qos.logback:logback-classic:1.2.3")
+            dependency("org.projectlombok:lombok:1.18.6")
         }
     }
 }
